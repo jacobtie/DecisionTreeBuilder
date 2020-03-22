@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.text.NumberFormat;
+import java.util.Locale;
 
 import javax.swing.JTextField;
 import java.awt.event.KeyAdapter;
@@ -98,60 +100,61 @@ public class DecisionTreeRunner {
 		lblTreeOutput.setBackground(Color.WHITE);
 		lblTreeOutput.setVerticalAlignment(SwingConstants.TOP);
 		lblTreeOutput.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		
+
 		txtThreshhold = new JTextField();
 		txtThreshhold.setText("5");
 		txtThreshhold.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtThreshhold.setColumns(10);
-		
+
 		JLabel lblDepthThreshhold = new JLabel("Depth Threshhold");
 		lblDepthThreshhold.setFont(new Font("Tahoma", Font.PLAIN, 16));
+
+		JLabel lblAccuracy = new JLabel("");
+		lblAccuracy.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(32)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(lblTreeOutput, GroupLayout.PREFERRED_SIZE, 322, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addComponent(btnChooseCsvFile, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
-									.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(lblTraining, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.UNRELATED)
-									.addComponent(txtThreshhold, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
-									.addPreferredGap(ComponentPlacement.RELATED)
-									.addComponent(lblDepthThreshhold, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
-									.addGap(32)
-									.addComponent(btnBuildTree, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE))
-								.addComponent(lblTitle)
-								.addComponent(lblSelectedFile, GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE))
-							.addContainerGap())))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(15)
-					.addComponent(lblTitle)
-					.addGap(28)
-					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
+				.createSequentialGroup()
+				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+						.addGroup(groupLayout.createSequentialGroup().addGap(32)
+								.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+										.addComponent(lblTreeOutput, GroupLayout.DEFAULT_SIZE, 805, Short.MAX_VALUE)
+										.addGroup(groupLayout.createSequentialGroup()
+												.addComponent(btnChooseCsvFile, GroupLayout.PREFERRED_SIZE, 189,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+												.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, 75,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(lblTraining, GroupLayout.PREFERRED_SIZE, 101,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(txtThreshhold, GroupLayout.PREFERRED_SIZE, 78,
+														GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.RELATED)
+												.addComponent(lblDepthThreshhold, GroupLayout.PREFERRED_SIZE, 134,
+														GroupLayout.PREFERRED_SIZE)
+												.addGap(32).addComponent(btnBuildTree, GroupLayout.PREFERRED_SIZE, 149,
+														GroupLayout.PREFERRED_SIZE))
+										.addComponent(lblTitle).addComponent(lblSelectedFile,
+												GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE)))
+						.addGroup(groupLayout.createSequentialGroup().addGap(308).addComponent(lblAccuracy,
+								GroupLayout.PREFERRED_SIZE, 193, GroupLayout.PREFERRED_SIZE)))
+				.addContainerGap()));
+		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
+				.createSequentialGroup().addGap(15).addComponent(lblTitle).addGap(28)
+				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnChooseCsvFile, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblTraining)
 						.addComponent(btnBuildTree, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtThreshhold, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtThreshhold, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+								GroupLayout.PREFERRED_SIZE)
 						.addComponent(lblDepthThreshhold))
-					.addGap(18)
-					.addComponent(lblSelectedFile)
-					.addGap(18)
-					.addComponent(lblTreeOutput, GroupLayout.PREFERRED_SIZE, 359, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(32, Short.MAX_VALUE))
-		);
+				.addGap(18).addComponent(lblSelectedFile).addGap(18)
+				.addComponent(lblTreeOutput, GroupLayout.PREFERRED_SIZE, 278, GroupLayout.PREFERRED_SIZE)
+				.addPreferredGap(ComponentPlacement.RELATED, 65, Short.MAX_VALUE).addComponent(lblAccuracy)
+				.addGap(28)));
 		frame.getContentPane().setLayout(groupLayout);
 
 		/**********************************************************************/
@@ -178,11 +181,18 @@ public class DecisionTreeRunner {
 		btnBuildTree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				var trainTestPartition = dataset.partition(Double.parseDouble(txtPercentage.getText()) / 100.0);
-				var tree = new DecisionTree(trainTestPartition.getTrainSet(), Integer.parseInt(txtThreshhold.getText()));
+				var tree = new DecisionTree(trainTestPartition.getTrainSet(),
+						Integer.parseInt(txtThreshhold.getText()));
 
-				var treeOutput = tree.toString();
+				if (tree != null) {
+					var evaluationResults = TreeEvaluator.evaluateTree(tree, trainTestPartition.getTestSet());
 
-				lblTreeOutput.setText("<html><pre>" + treeOutput + "</pre></html>");
+					var treeOutput = tree.toString();
+
+					lblTreeOutput.setText("<html><pre>" + treeOutput + "</pre></html>");
+					lblAccuracy.setText("Accuracy: "
+							+ NumberFormat.getPercentInstance(Locale.US).format(evaluationResults.getAccuracy()));
+				}
 			}
 		});
 
@@ -212,24 +222,24 @@ public class DecisionTreeRunner {
 				}
 			}
 		});
-		
+
 		txtThreshhold.getDocument().addDocumentListener(new DocumentListener() {
-			
+
 			@Override
 			public void removeUpdate(DocumentEvent e) {
 				onChange();
 			}
-			
+
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				onChange();				
+				onChange();
 			}
-			
+
 			@Override
 			public void changedUpdate(DocumentEvent e) {
 				onChange();
 			}
-			
+
 			private void onChange() {
 				var enteredValue = txtThreshhold.getText();
 				if (dataset != null && isValidPercent(txtPercentage.getText()) && isValidDepth(enteredValue)) {
@@ -255,20 +265,20 @@ public class DecisionTreeRunner {
 
 		return true;
 	}
-	
+
 	private static boolean isValidDepth(String value) {
 		int depth = 0;
-		
+
 		try {
 			depth = Integer.parseInt(value);
 		} catch (NumberFormatException ex) {
 			return false;
 		}
-		
+
 		if (depth <= 1) {
 			return false;
 		}
-		
+
 		return true;
 	}
 }
