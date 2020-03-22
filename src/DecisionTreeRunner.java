@@ -38,6 +38,7 @@ public class DecisionTreeRunner {
 	private JFrame frame;
 	private JTextField txtPercentage;
 	private Dataset dataset;
+	private JTextField txtThreshhold;
 
 	/**
 	 * Launch the application.
@@ -97,41 +98,60 @@ public class DecisionTreeRunner {
 		lblTreeOutput.setBackground(Color.WHITE);
 		lblTreeOutput.setVerticalAlignment(SwingConstants.TOP);
 		lblTreeOutput.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		
+		txtThreshhold = new JTextField();
+		txtThreshhold.setText("5");
+		txtThreshhold.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		txtThreshhold.setColumns(10);
+		
+		JLabel lblDepthThreshhold = new JLabel("Depth Threshhold");
+		lblDepthThreshhold.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addGap(32)
-				.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(32)
+					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 						.addGroup(groupLayout.createSequentialGroup()
-								.addComponent(lblTreeOutput, GroupLayout.PREFERRED_SIZE, 322,
-										GroupLayout.PREFERRED_SIZE)
-								.addContainerGap())
-						.addGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-								.createSequentialGroup()
-								.addComponent(btnChooseCsvFile, GroupLayout.PREFERRED_SIZE, 189,
-										GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED, 90, Short.MAX_VALUE)
-								.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
-								.addPreferredGap(ComponentPlacement.RELATED)
-								.addComponent(lblTraining, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
-								.addGap(24)
-								.addComponent(btnBuildTree, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE)
-								.addGap(183))
+							.addComponent(lblTreeOutput, GroupLayout.PREFERRED_SIZE, 322, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())
+						.addGroup(groupLayout.createSequentialGroup()
+							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addGroup(groupLayout.createSequentialGroup()
-										.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-												.addComponent(lblTitle).addComponent(lblSelectedFile,
-														GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE))
-										.addContainerGap(452, Short.MAX_VALUE))))));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(groupLayout
-				.createSequentialGroup().addGap(15).addComponent(lblTitle).addGap(28)
-				.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+									.addComponent(btnChooseCsvFile, GroupLayout.PREFERRED_SIZE, 189, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED, 79, Short.MAX_VALUE)
+									.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblTraining, GroupLayout.PREFERRED_SIZE, 101, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.UNRELATED)
+									.addComponent(txtThreshhold, GroupLayout.PREFERRED_SIZE, 78, GroupLayout.PREFERRED_SIZE)
+									.addPreferredGap(ComponentPlacement.RELATED)
+									.addComponent(lblDepthThreshhold, GroupLayout.PREFERRED_SIZE, 134, GroupLayout.PREFERRED_SIZE)
+									.addGap(32)
+									.addComponent(btnBuildTree, GroupLayout.PREFERRED_SIZE, 149, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblTitle)
+								.addComponent(lblSelectedFile, GroupLayout.PREFERRED_SIZE, 305, GroupLayout.PREFERRED_SIZE))
+							.addContainerGap())))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(15)
+					.addComponent(lblTitle)
+					.addGap(28)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnChooseCsvFile, GroupLayout.PREFERRED_SIZE, 44, GroupLayout.PREFERRED_SIZE)
+						.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblTraining)
 						.addComponent(btnBuildTree, GroupLayout.PREFERRED_SIZE, 40, GroupLayout.PREFERRED_SIZE)
-						.addComponent(txtPercentage, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblTraining))
-				.addGap(18).addComponent(lblSelectedFile).addGap(18)
-				.addComponent(lblTreeOutput, GroupLayout.PREFERRED_SIZE, 359, GroupLayout.PREFERRED_SIZE)
-				.addContainerGap(32, Short.MAX_VALUE)));
+						.addComponent(txtThreshhold, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblDepthThreshhold))
+					.addGap(18)
+					.addComponent(lblSelectedFile)
+					.addGap(18)
+					.addComponent(lblTreeOutput, GroupLayout.PREFERRED_SIZE, 359, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(32, Short.MAX_VALUE))
+		);
 		frame.getContentPane().setLayout(groupLayout);
 
 		/**********************************************************************/
@@ -147,7 +167,7 @@ public class DecisionTreeRunner {
 					var message = dataset.getName() + " chosen";
 					lblSelectedFile.setText(message);
 
-					if (isValidPercent(txtPercentage.getText())) {
+					if (isValidPercent(txtPercentage.getText()) && isValidDepth(txtThreshhold.getText())) {
 						btnBuildTree.setEnabled(true);
 					}
 				}
@@ -158,7 +178,7 @@ public class DecisionTreeRunner {
 		btnBuildTree.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				var trainTestPartition = dataset.partition(Double.parseDouble(txtPercentage.getText()) / 100.0);
-				var tree = new DecisionTree(trainTestPartition.getTrainSet(), 10000);
+				var tree = new DecisionTree(trainTestPartition.getTrainSet(), Integer.parseInt(txtThreshhold.getText()));
 
 				var treeOutput = tree.toString();
 
@@ -183,9 +203,36 @@ public class DecisionTreeRunner {
 				onChange();
 			}
 
-			public void onChange() {
+			private void onChange() {
 				var enteredValue = txtPercentage.getText();
-				if (dataset != null && isValidPercent(enteredValue)) {
+				if (dataset != null && isValidDepth(txtThreshhold.getText()) && isValidPercent(enteredValue)) {
+					btnBuildTree.setEnabled(true);
+				} else {
+					btnBuildTree.setEnabled(false);
+				}
+			}
+		});
+		
+		txtThreshhold.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				onChange();
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				onChange();				
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				onChange();
+			}
+			
+			private void onChange() {
+				var enteredValue = txtThreshhold.getText();
+				if (dataset != null && isValidPercent(txtPercentage.getText()) && isValidDepth(enteredValue)) {
 					btnBuildTree.setEnabled(true);
 				} else {
 					btnBuildTree.setEnabled(false);
@@ -206,6 +253,22 @@ public class DecisionTreeRunner {
 			return false;
 		}
 
+		return true;
+	}
+	
+	private static boolean isValidDepth(String value) {
+		int depth = 0;
+		
+		try {
+			depth = Integer.parseInt(value);
+		} catch (NumberFormatException ex) {
+			return false;
+		}
+		
+		if (depth <= 1) {
+			return false;
+		}
+		
 		return true;
 	}
 }
