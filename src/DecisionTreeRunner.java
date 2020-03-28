@@ -106,7 +106,7 @@ public class DecisionTreeRunner {
 		txtThreshhold.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		txtThreshhold.setColumns(10);
 
-		JLabel lblDepthThreshhold = new JLabel("Depth Threshhold");
+		JLabel lblDepthThreshhold = new JLabel("Depth Limit");
 		lblDepthThreshhold.setFont(new Font("Tahoma", Font.PLAIN, 16));
 
 		JLabel lblAccuracy = new JLabel("");

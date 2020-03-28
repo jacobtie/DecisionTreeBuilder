@@ -23,10 +23,11 @@ public class Dataset {
 		initializeClassifications();
 	}
 
-	public static Dataset FromRecordsWithoutAttribute(List<DatasetRecord> records, String attribute, String name, List<String> attributes, String classificationAttribute) {
+	public static Dataset FromRecordsWithoutAttribute(List<DatasetRecord> records, String attribute, String name,
+			List<String> attributes, String classificationAttribute) {
 		var clonedRecords = records.stream().map(record -> record.cloneWithoutAttribute(attribute))
 				.collect(Collectors.toList());
-		
+
 		return new Dataset(name, attributes, clonedRecords, classificationAttribute);
 	}
 
